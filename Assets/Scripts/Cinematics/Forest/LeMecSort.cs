@@ -17,7 +17,7 @@ public class LeMecSort : CinematicEvent
 
     private IEnumerator Move()
     {
-
+        this.mec.gameObject.SetActive(true);
         for (int i = 0; i < destinations.Length; i++)
         {
             // Déplacement de la caméra
