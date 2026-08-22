@@ -42,6 +42,8 @@ public class PlayerController : MonoBehaviour
     private float coyoteJumpWindow = 0.1f;
     public bool[] closeToWalls = new bool[2] { false, false };
 
+    private Torche torche;
+
     private bool canMove = true;
 
 
@@ -67,6 +69,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (this.canMove)
         this.MovePatate();
     }
 
@@ -205,4 +208,18 @@ public class PlayerController : MonoBehaviour
     }
 
 
+    public void SetCanMove(bool canMove)
+    {
+        this.canMove = canMove;
+    }
+
+    public void SetTorche(Torche torche)
+    {
+        this.torche = torche;
+    }
+
+    public Torche GetTorche() 
+    { 
+        return this.torche; 
+    }
 }

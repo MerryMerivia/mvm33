@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Attache : MonoBehaviour
+public class Eau : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
@@ -13,19 +13,19 @@ public class Attache : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
-            Debug.Log("Hello ?");
-
-            if (collision.transform.GetComponent<PlayerController>().GetTorche())
+            PlayerController playerController = collision.GetComponent<PlayerController>();
+            Torche torche = playerController.GetTorche();
+            if (torche)
             {
-                Debug.Log("Hellooooo");
-                this.gameObject.SetActive(false);
+                torche.gameObject.SetActive(false);
+                playerController.SetTorche(null);
             }
         }
     }
