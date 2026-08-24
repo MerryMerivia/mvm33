@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -33,11 +34,15 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private AnimationClip deathAnimationClip;
-    [SerializeField] private Rigidbody2D rigidbody;
-    [SerializeField] private Collider2D collider;
+    [SerializeField] private Rigidbody2D _rigidbody;
+    [SerializeField] private Collider2D _collider;
 
     private float lastTimeSinceJumped = 0;
     private bool wantsToJump = false;
+
+    private float directionFactor = 0f;
+    private bool movingLeft = false;
+
     private float timeSinceGrounded = 0f;
     private float coyoteJumpWindow = 0.1f;
     public bool[] closeToWalls = new bool[2] { false, false };
@@ -52,10 +57,11 @@ public class PlayerController : MonoBehaviour
         Application.targetFrameRate = 60;
         this.currentPhysic = this.normalPhysic;
     }
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        //GetComponent<PlayerInput>().currentActionMap
     }
 
     // Update is called once per frame
@@ -73,21 +79,48 @@ public class PlayerController : MonoBehaviour
         this.MovePatate();
     }
 
-    private void CheckMovement()
+    public void OnMove(InputAction.CallbackContext context)
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (context.performed)
+        {
+            float val = context.ReadValue<Vector2>().x;
+
+            if(Math.Abs(val) > 0.01)
+            {
+                directionFactor = context.ReadValue<Vector2>().x;
+                movingLeft = directionFactor < 0;
+            }
+            else
+            {
+                directionFactor = 0f;
+            }
+            
+        }
+
+        if (context.canceled)
+        {
+            directionFactor = 0f;
+        }
+    }
+
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        if (context.performed)
         {
             wantsToJump = true;
         }
+    }
 
-        if (rigidbody.gravityScale == this.currentPhysic.jumpingGravity)
+    private void CheckMovement()
+    {
+        if (_rigidbody.gravityScale == this.currentPhysic.jumpingGravity)
         {
             lastTimeSinceJumped += Time.deltaTime;
 
             // Arrêt de gravité de saut
-            if (Input.GetKeyUp(KeyCode.Space) || lastTimeSinceJumped > this.currentPhysic.delayBeforeNormalGravity)
+            if (wantsToJump || lastTimeSinceJumped > this.currentPhysic.delayBeforeNormalGravity)
             {
-                rigidbody.gravityScale = this.currentPhysic.normalGravity;
+                _rigidbody.gravityScale = this.currentPhysic.normalGravity;
                 lastTimeSinceJumped = 0f;
             }
         }
@@ -99,31 +132,34 @@ public class PlayerController : MonoBehaviour
     private void MovePatate()
     {
         // Le saut
-        if ((IsGrounded() || this.timeSinceGrounded < this.coyoteJumpWindow) && wantsToJump && this.rigidbody.velocity.y < 0.1f)
+        if ((IsGrounded() || this.timeSinceGrounded < this.coyoteJumpWindow) && wantsToJump && this._rigidbody.linearVelocity.y < 0.1f)
         {
             //animator.SetBool("IsJumping", true);
             //audioManager.PlayClip(audioManager.jumpClip);
-            this.rigidbody.velocity = new Vector2(this.rigidbody.velocity.x, 0);
-            rigidbody.AddForce(Vector2.up * this.currentPhysic.jumpImpulse, ForceMode2D.Impulse);
-            rigidbody.gravityScale = this.currentPhysic.jumpingGravity;
+            this._rigidbody.linearVelocity = new Vector2(this._rigidbody.linearVelocity.x, 0);
+            _rigidbody.AddForce(Vector2.up * this.currentPhysic.jumpImpulse, ForceMode2D.Impulse);
+            _rigidbody.gravityScale = this.currentPhysic.jumpingGravity;
         }
         wantsToJump = false;
 
         // Les directions
-        if ((Input.GetAxis("Horizontal") < -0.01f && !this.closeToWalls[0]) || (Input.GetAxis("Horizontal") > 0.01f && !this.closeToWalls[1]))   // Pour corriger le bug d'entrée partielle dans le mur
+        if (!this.closeToWalls[1]) // Pour corriger le bug d'entrée partielle dans le mur
         {
-            transform.Translate(this.currentPhysic.walkSpeed * Input.GetAxis("Horizontal") * Time.deltaTime * Vector3.right);
+            transform.Translate(this.currentPhysic.walkSpeed * directionFactor * Time.deltaTime * Vector3.right);
         }
 
-        if (Input.GetAxis("Horizontal") > 0.01f)
+        if (directionFactor != 0)
         {
-            //animator.SetInteger("Direction", 1);
-            //animator.SetBool("IsMoving", true);
-        }
-        else if (Input.GetAxis("Horizontal") < -0.01f)
-        {
-            //animator.SetInteger("Direction", -1);
-            //animator.SetBool("IsMoving", true);
+            if(movingLeft)
+            {
+                //animator.SetInteger("Direction", -1);
+                //animator.SetBool("IsMoving", true);
+            }
+            else
+            {
+                //animator.SetInteger("Direction", 1);
+                //animator.SetBool("IsMoving", true);
+            }
         }
         else
         {
@@ -131,16 +167,16 @@ public class PlayerController : MonoBehaviour
         }
 
         // Vitesse max de chute. Pas possible d'éditer directement les composants de rigidbody.velocity
-        if (this.rigidbody.velocity.y < this.currentPhysic.maxFallingSpeed)
+        if (this._rigidbody.linearVelocity.y < this.currentPhysic.maxFallingSpeed)
         {
-            this.rigidbody.velocity = new Vector2(this.rigidbody.velocity.x, this.currentPhysic.maxFallingSpeed);
+            this._rigidbody.linearVelocity = new Vector2(this._rigidbody.linearVelocity.x, this.currentPhysic.maxFallingSpeed);
         }
     }
 
     private bool IsGrounded()
     {
         float checkExtent = 0.03f;
-        RaycastHit2D castHit = Physics2D.BoxCast(collider.bounds.center, collider.bounds.size - new Vector3(0.1f, 0, 0), 0f, Vector2.down, checkExtent, groundMask);
+        RaycastHit2D castHit = Physics2D.BoxCast(_collider.bounds.center, _collider.bounds.size - new Vector3(0.1f, 0, 0), 0f, Vector2.down, checkExtent, groundMask);
         bool isGrounded = castHit.collider != null;
 
         // Atterissage
@@ -154,12 +190,12 @@ public class PlayerController : MonoBehaviour
 
         if (isGrounded)
         {
-            this.rigidbody.gravityScale = this.currentPhysic.normalGravity;
+            this._rigidbody.gravityScale = this.currentPhysic.normalGravity;
             this.timeSinceGrounded = 0f;
             this.lastTimeSinceJumped = 0f;
         }
 
-        if (!isGrounded && Math.Abs(rigidbody.velocity.y) > 0.1f)
+        if (!isGrounded && Math.Abs(_rigidbody.linearVelocity.y) > 0.1f)
         {
             //animator.SetBool("IsAirborne", true);
             this.timeSinceGrounded += Time.deltaTime;
@@ -167,9 +203,9 @@ public class PlayerController : MonoBehaviour
 
         Color rayColor = (isGrounded ? Color.green : Color.red);
 
-        Debug.DrawRay(collider.bounds.center + new Vector3(collider.bounds.extents.x, 0), Vector2.down * (collider.bounds.extents.y + checkExtent), rayColor);
-        Debug.DrawRay(collider.bounds.center - new Vector3(collider.bounds.extents.x, 0), Vector2.down * (collider.bounds.extents.y + checkExtent), rayColor);
-        Debug.DrawRay(collider.bounds.center - new Vector3(collider.bounds.extents.x, collider.bounds.extents.y + checkExtent), Vector2.right * (collider.bounds.extents.x * 2f), rayColor);
+        Debug.DrawRay(_collider.bounds.center + new Vector3(_collider.bounds.extents.x, 0), Vector2.down * (_collider.bounds.extents.y + checkExtent), rayColor);
+        Debug.DrawRay(_collider.bounds.center - new Vector3(_collider.bounds.extents.x, 0), Vector2.down * (_collider.bounds.extents.y + checkExtent), rayColor);
+        Debug.DrawRay(_collider.bounds.center - new Vector3(_collider.bounds.extents.x, _collider.bounds.extents.y + checkExtent), Vector2.right * (_collider.bounds.extents.x * 2f), rayColor);
 
         return isGrounded;
     }
@@ -177,14 +213,14 @@ public class PlayerController : MonoBehaviour
     public void SetActive(bool activate)
     {
         canMove = activate;
-        rigidbody.gravityScale = (activate ? (Input.GetKey(KeyCode.Space) ? this.currentPhysic.jumpingGravity : this.currentPhysic.normalGravity) : 0);
+        _rigidbody.gravityScale = (activate ? (Input.GetKey(KeyCode.Space) ? this.currentPhysic.jumpingGravity : this.currentPhysic.normalGravity) : 0);
     }
 
     public void SetWaterPhysics(bool activate)
     {
         this.currentPhysic = (activate ? this.underWaterPhysic : this.normalPhysic);
-        this.rigidbody.gravityScale = this.currentPhysic.jumpingGravity;
-        this.rigidbody.AddForce(Vector2.up * this.currentPhysic.jumpImpulse / 4, ForceMode2D.Impulse);
+        this._rigidbody.gravityScale = this.currentPhysic.jumpingGravity;
+        this._rigidbody.AddForce(Vector2.up * this.currentPhysic.jumpImpulse / 4, ForceMode2D.Impulse);
     }
 
     /// <summary>
