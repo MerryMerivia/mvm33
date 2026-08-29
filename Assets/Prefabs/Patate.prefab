@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 3080569841467595679}
   - component: {fileID: 2895584025460756489}
   - component: {fileID: 8003507743157820975}
+  - component: {fileID: 3485823719889979725}
   m_Layer: 7
   m_Name: Patate
   m_TagString: Player
@@ -370,3 +371,17 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &3485823719889979725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8151505754879987803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9574098b5fd26f43be6985ce36b4f99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  MaxHealth: 3
+  Health: 3
