@@ -16,14 +16,20 @@ public class HealthUI : MonoBehaviour
     void Awake()
     {
         healthUnits = GetComponentsInChildren<Image>(true);
+        Player.HealthChangeEvent.AddListener(HealthUIUpdate);
     }
 
     private void Start()
     {
+        HealthUIUpdate();
+    }
+
+    private void HealthUIUpdate()
+    {
         // 0 is parent sprite because GetComponentsInChildren also gets self
         for (int i = 1; i < healthUnits.Length; i++)
         {
-            if(i <= Player.MaxHealth)
+            if (i <= Player.MaxHealth)
             {
                 healthUnits[i].gameObject.SetActive(true);
 
