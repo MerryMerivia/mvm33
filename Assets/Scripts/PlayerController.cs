@@ -51,6 +51,10 @@ public class PlayerController : MonoBehaviour
 
     private bool canMove = true;
 
+    private bool firstJumpPerformed = false;
+    private bool doubleJumpUnlocked = true;
+    private bool doubleJumpPerformed = false;
+
 
     void Awake()
     {
@@ -67,6 +71,13 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Debug.Log("C'est celle là");
+            this.doubleJumpUnlocked = !this.doubleJumpUnlocked;
+            Debug.Log(doubleJumpUnlocked);
+        }
+
         if (this.canMove)
         {
             CheckMovement();
@@ -105,9 +116,14 @@ public class PlayerController : MonoBehaviour
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (context.performed)
+        if (context.started)
         {
             wantsToJump = true;
+        }
+
+        if (context.canceled)
+        {
+            this.wantsToJump = false;
         }
     }
 
@@ -118,10 +134,11 @@ public class PlayerController : MonoBehaviour
             lastTimeSinceJumped += Time.deltaTime;
 
             // Arrêt de gravité de saut
-            if (wantsToJump || lastTimeSinceJumped > this.currentPhysic.delayBeforeNormalGravity)
+            if (!wantsToJump || lastTimeSinceJumped > this.currentPhysic.delayBeforeNormalGravity)
             {
                 _rigidbody.gravityScale = this.currentPhysic.normalGravity;
                 lastTimeSinceJumped = 0f;
+                this.wantsToJump = false;
             }
         }
     }
@@ -132,15 +149,24 @@ public class PlayerController : MonoBehaviour
     private void MovePatate()
     {
         // Le saut
-        if ((IsGrounded() || this.timeSinceGrounded < this.coyoteJumpWindow) && wantsToJump && this._rigidbody.linearVelocity.y < 0.1f)
+        if ((((IsGrounded() || this.timeSinceGrounded < this.coyoteJumpWindow) && !this.firstJumpPerformed) // Touche le sol ou coyote jump, pour saut simple
+            || (this.doubleJumpUnlocked && !this.doubleJumpPerformed))    // Ou alors double jump, c'est bien aussi
+            // Il faut au moins un des deux au dessus, et celui en dessous
+            && wantsToJump && this._rigidbody.linearVelocity.y < 0.1f)  // Veut sauter
         {
+            if (this.firstJumpPerformed)
+            {
+                this.doubleJumpPerformed = true;
+            } 
+            this.firstJumpPerformed = true;
+
             //animator.SetBool("IsJumping", true);
             //audioManager.PlayClip(audioManager.jumpClip);
             this._rigidbody.linearVelocity = new Vector2(this._rigidbody.linearVelocity.x, 0);
             _rigidbody.AddForce(Vector2.up * this.currentPhysic.jumpImpulse, ForceMode2D.Impulse);
             _rigidbody.gravityScale = this.currentPhysic.jumpingGravity;
         }
-        wantsToJump = false;
+        //wantsToJump = false;
 
         // Les directions
         if (!this.closeToWalls[1]) // Pour corriger le bug d'entrée partielle dans le mur
@@ -193,9 +219,11 @@ public class PlayerController : MonoBehaviour
             this._rigidbody.gravityScale = this.currentPhysic.normalGravity;
             this.timeSinceGrounded = 0f;
             this.lastTimeSinceJumped = 0f;
+            this.firstJumpPerformed = false;
+            this.doubleJumpPerformed = false;
         }
 
-        if (!isGrounded && Math.Abs(_rigidbody.linearVelocity.y) > 0.1f)
+        if (!isGrounded/* && Math.Abs(_rigidbody.linearVelocity.y) > 0.1f*/)
         {
             //animator.SetBool("IsAirborne", true);
             this.timeSinceGrounded += Time.deltaTime;
