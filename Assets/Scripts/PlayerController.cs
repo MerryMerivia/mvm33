@@ -1,10 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(SpriteRenderer))]
 public class PlayerController : MonoBehaviour
 {
     [Serializable]
@@ -55,11 +53,18 @@ public class PlayerController : MonoBehaviour
     private bool doubleJumpUnlocked = true;
     private bool doubleJumpPerformed = false;
 
+    private SpriteRenderer spriteRenderer;
+
+    private InputAction cheat;
+
 
     void Awake()
     {
         Application.targetFrameRate = 60;
         this.currentPhysic = this.normalPhysic;
+
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        cheat = InputSystem.actions.FindAction("Cheat");
     }
 
     // Start is called before the first frame update
@@ -71,7 +76,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
+        if (cheat.WasPerformedThisFrame())
         {
             Debug.Log("C'est celle là");
             this.doubleJumpUnlocked = !this.doubleJumpUnlocked;
@@ -178,11 +183,13 @@ public class PlayerController : MonoBehaviour
         {
             if(movingLeft)
             {
+                spriteRenderer.flipX = true;
                 //animator.SetInteger("Direction", -1);
                 //animator.SetBool("IsMoving", true);
             }
             else
             {
+                spriteRenderer.flipX = false;
                 //animator.SetInteger("Direction", 1);
                 //animator.SetBool("IsMoving", true);
             }
