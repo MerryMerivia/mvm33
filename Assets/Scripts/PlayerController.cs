@@ -4,8 +4,14 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(SpriteRenderer))]
+[RequireComponent(typeof(Animator))]
 public class PlayerController : MonoBehaviour
 {
+    private static readonly int AnimatorAttackTrigger = Animator.StringToHash("Attack");
+    private static readonly int AnimatorJumpTrigger = Animator.StringToHash("Jump");
+    private static readonly int AnimatorWalkingBool = Animator.StringToHash("IsWalking");
+    private static readonly int AnimatorGroundedBool = Animator.StringToHash("Grounded");
+
     [Serializable]
     public struct PhysicsVariables
     {
@@ -63,6 +69,8 @@ public class PlayerController : MonoBehaviour
 
     private bool canMove = true;
 
+    //private bool attacking = false;
+
     [Header("Upgrades")]
     [SerializeField] private bool doubleJumpUnlocked = false;
     [SerializeField] private bool wallJumpUnlocked = false;
@@ -82,6 +90,8 @@ public class PlayerController : MonoBehaviour
 
     private SpriteRenderer spriteRenderer;
 
+    private Animator animator;
+
     private InputAction cheat;
 
     void Awake()
@@ -90,6 +100,7 @@ public class PlayerController : MonoBehaviour
         this.currentPhysic = this.normalPhysic;
 
         spriteRenderer = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
         cheat = InputSystem.actions.FindAction("Cheat");
     }
 
@@ -176,6 +187,14 @@ public class PlayerController : MonoBehaviour
             {
                 this.Bonk();
             }
+        }
+    }
+
+    public void OnAttack(InputAction.CallbackContext context)
+    {
+        if(context.action.WasPerformedThisFrame())
+        {
+            animator.SetTrigger(AnimatorAttackTrigger);
         }
     }
 

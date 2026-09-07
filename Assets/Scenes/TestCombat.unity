@@ -445,6 +445,17 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1948162006 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2895584025460756489, guid: 8a14608282c129841af2e963b46f2658, type: 3}
+  m_PrefabInstance: {fileID: 4546644386873467522}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1181027311}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab30918a2e2af784ab13d47e718590b9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3089678401525492911
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -620,6 +631,14 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 3080569841467595679, guid: 8a14608282c129841af2e963b46f2658, type: 3}
+      propertyPath: m_Size.x
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3080569841467595679, guid: 8a14608282c129841af2e963b46f2658, type: 3}
+      propertyPath: m_Size.y
+      value: 1.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3080569841467595679, guid: 8a14608282c129841af2e963b46f2658, type: 3}
       propertyPath: m_SpriteTilingProperty.newSize.x
       value: 1.66
       objectReference: {fileID: 0}
@@ -673,15 +692,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5812966869182889972, guid: 8a14608282c129841af2e963b46f2658, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.75
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5812966869182889972, guid: 8a14608282c129841af2e963b46f2658, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.75
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5812966869182889972, guid: 8a14608282c129841af2e963b46f2658, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.75
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5812966869182889972, guid: 8a14608282c129841af2e963b46f2658, type: 3}
       propertyPath: m_LocalPosition.x
@@ -722,6 +741,54 @@ PrefabInstance:
     - target: {fileID: 5812966869182889972, guid: 8a14608282c129841af2e963b46f2658, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8003507743157820975, guid: 8a14608282c129841af2e963b46f2658, type: 3}
+      propertyPath: m_ActionEvents.Array.size
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 8003507743157820975, guid: 8a14608282c129841af2e963b46f2658, type: 3}
+      propertyPath: m_ActionEvents.Array.data[19].m_ActionId
+      value: 9395d9f0-812b-4ddd-a1ad-627a52fdede1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8003507743157820975, guid: 8a14608282c129841af2e963b46f2658, type: 3}
+      propertyPath: m_ActionEvents.Array.data[20].m_ActionId
+      value: 805eb1a0-128d-4050-9cd2-b059b2a89945
+      objectReference: {fileID: 0}
+    - target: {fileID: 8003507743157820975, guid: 8a14608282c129841af2e963b46f2658, type: 3}
+      propertyPath: m_ActionEvents.Array.data[19].m_ActionName
+      value: 'Player/Cheat[/Keyboard/p]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 8003507743157820975, guid: 8a14608282c129841af2e963b46f2658, type: 3}
+      propertyPath: m_ActionEvents.Array.data[20].m_ActionName
+      value: 'Player/Roll[/Keyboard/c]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 8003507743157820975, guid: 8a14608282c129841af2e963b46f2658, type: 3}
+      propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8003507743157820975, guid: 8a14608282c129841af2e963b46f2658, type: 3}
+      propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8003507743157820975, guid: 8a14608282c129841af2e963b46f2658, type: 3}
+      propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1948162006}
+    - target: {fileID: 8003507743157820975, guid: 8a14608282c129841af2e963b46f2658, type: 3}
+      propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8003507743157820975, guid: 8a14608282c129841af2e963b46f2658, type: 3}
+      propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnAttack
+      objectReference: {fileID: 0}
+    - target: {fileID: 8003507743157820975, guid: 8a14608282c129841af2e963b46f2658, type: 3}
+      propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: PlayerController, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8003507743157820975, guid: 8a14608282c129841af2e963b46f2658, type: 3}
+      propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 8151505754879987803, guid: 8a14608282c129841af2e963b46f2658, type: 3}
       propertyPath: m_Name

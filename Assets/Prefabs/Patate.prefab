@@ -1,5 +1,99 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4740582756266626298
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5557549997587251987}
+  - component: {fileID: 2096743791685158043}
+  - component: {fileID: 6240370095872434065}
+  m_Layer: 7
+  m_Name: WallJumpCheck
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5557549997587251987
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4740582756266626298}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8555817087299164638}
+  m_Father: {fileID: 5812966869182889972}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &2096743791685158043
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4740582756266626298}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0.77565, y: -0.19515228}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 0.1817627, y: 1.0644951}
+  m_EdgeRadius: 0
+--- !u!114 &6240370095872434065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4740582756266626298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd0d6f3ee3fa93b4e917b4ea30595fc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Walljumping
+  jumpAvailable: 1
+  boxCollider: {fileID: 2096743791685158043}
 --- !u!1 &5693793338755852611
 GameObject:
   m_ObjectHideFlags: 0
@@ -31,6 +125,98 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5812966869182889972}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6608360584744098177
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8555817087299164638}
+  - component: {fileID: 2056555443110582534}
+  - component: {fileID: 1430703906818128851}
+  m_Layer: 7
+  m_Name: WallClipChecker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8555817087299164638
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6608360584744098177}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5557549997587251987}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &2056555443110582534
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6608360584744098177}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0.73049164, y: -0.13215542}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 0.09144592, y: 0.93850136}
+  m_EdgeRadius: 0
+--- !u!114 &1430703906818128851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6608360584744098177}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4fea7d457ce6a14fbc7d0cf8a072743, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WallClipChecker
+  boxCollider: {fileID: 2056555443110582534}
 --- !u!1 &8151505754879987803
 GameObject:
   m_ObjectHideFlags: 0
@@ -46,6 +232,7 @@ GameObject:
   - component: {fileID: 2895584025460756489}
   - component: {fileID: 8003507743157820975}
   - component: {fileID: 3485823719889979725}
+  - component: {fileID: 2518521552722396238}
   m_Layer: 7
   m_Name: Patate
   m_TagString: Player
@@ -67,6 +254,7 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3786373045306628793}
+  - {fileID: 5557549997587251987}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4497304959574561494
@@ -220,13 +408,23 @@ MonoBehaviour:
     normalGravity: 0
     jumpingGravity: 0
     maxFallingSpeed: 0
+    wallJumpHorizontalEjectionSpeed: 0
+    wallJumpMinimalTime: 0
+    rollingSpeed: 0
+    rollChargingTime: 0
+    rollTimeBeforeCanJump: 0
   normalPhysic:
-    walkSpeed: 6.5
-    delayBeforeNormalGravity: 0.65
-    jumpImpulse: 15
-    normalGravity: 5
-    jumpingGravity: 2.5
-    maxFallingSpeed: -20
+    walkSpeed: 7.8
+    delayBeforeNormalGravity: 0.45
+    jumpImpulse: 17
+    normalGravity: 7
+    jumpingGravity: 3
+    maxFallingSpeed: -15
+    wallJumpHorizontalEjectionSpeed: 8
+    wallJumpMinimalTime: 0.3
+    rollingSpeed: 15
+    rollChargingTime: 1.5
+    rollTimeBeforeCanJump: 0
   underWaterPhysic:
     walkSpeed: 0
     delayBeforeNormalGravity: 0
@@ -234,13 +432,26 @@ MonoBehaviour:
     normalGravity: 0
     jumpingGravity: 0
     maxFallingSpeed: 0
+    wallJumpHorizontalEjectionSpeed: 0
+    wallJumpMinimalTime: 0
+    rollingSpeed: 0
+    rollChargingTime: 0
+    rollTimeBeforeCanJump: 0
   groundMask:
     serializedVersion: 2
     m_Bits: 64
   deathAnimationClip: {fileID: 0}
   _rigidbody: {fileID: 8996720087939606576}
   _collider: {fileID: 3080569841467595679}
+  wallCheck: {fileID: 6240370095872434065}
+  wallClipCheck: {fileID: 1430703906818128851}
   closeToWalls: 0000
+  doubleJumpUnlocked: 0
+  wallJumpUnlocked: 1
+  spinDashUnlocked: 1
+  rollingScale: {x: 0.55, y: 0.55, z: 0.55}
+  maxRollingTimeAgainstWall: 0.08
+  bonkForce: 5
 --- !u!114 &8003507743157820975
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -366,6 +577,26 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 9395d9f0-812b-4ddd-a1ad-627a52fdede1
+    m_ActionName: 'Player/Cheat[/Keyboard/p]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2895584025460756489}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: OnSpinDash
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 805eb1a0-128d-4050-9cd2-b059b2a89945
+    m_ActionName: 'Player/Roll[/Keyboard/c]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player
@@ -385,3 +616,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   MaxHealth: 3
   Health: 3
+--- !u!95 &2518521552722396238
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8151505754879987803}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
