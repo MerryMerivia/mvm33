@@ -46,6 +46,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Rigidbody2D _rigidbody;
     [SerializeField] private Collider2D _collider;
     [SerializeField] private WallCheck wallCheck;
+    [SerializeField] private WallClipChecker wallClipCheck;
 
     private float lastTimeSinceJumped = 0;
     private float lastTimeSinceWallJump = 0f;
@@ -72,10 +73,12 @@ public class PlayerController : MonoBehaviour
     private bool isWallJumping = false; // Vrai tant que le joueur maintient le saut après un walljump. Force d'avancer dans la direction opposée au mur (empêche infinite single wall jumps)
     private bool releasedJump = true;   // Pour forcer le relachement du saut pour des sauts complémentaires
     private bool isRolling = false;
+    private float currentRollingTimeAgainstWall = 0;
 
     private Vector3 originalScale;
     [SerializeField] Vector3 rollingScale;
-    //[SerializeField] float
+    [SerializeField] float maxRollingTimeAgainstWall;
+    [SerializeField] float bonkForce;
 
     private SpriteRenderer spriteRenderer;
 
@@ -110,8 +113,8 @@ public class PlayerController : MonoBehaviour
         if (this.canMove)
         {
             this.CheckMovement();
-            this.ProcessDurationEvents();
         }
+        this.ProcessDurationEvents();
     }
 
     private void FixedUpdate()
@@ -122,7 +125,7 @@ public class PlayerController : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
-        if (context.performed)
+        if (context.performed && !this.isRolling && this.canMove)   // En roulant, on a pas libre contrôle
         {
             float val = context.ReadValue<Vector2>().x;
 
@@ -162,10 +165,16 @@ public class PlayerController : MonoBehaviour
     {
         if (context.started)
         {
-            Debug.Log("Dedans");
-            if (this.spinDashUnlocked && this.currentPhysic.rollingSpeed > 0)   
+            if (!this.isRolling)
             {
-                StartCoroutine(ChargeSpinDash());
+                if (this.spinDashUnlocked && this.currentPhysic.rollingSpeed > 0)
+                {
+                    StartCoroutine(ChargeSpinDash());
+                }
+            }
+            else
+            {
+                this.Bonk();
             }
         }
     }
@@ -198,6 +207,21 @@ public class PlayerController : MonoBehaviour
                 this.isWallJumping = false;
             }*/
         }
+
+        if (this.isRolling)
+        {
+            if (this.wallCheck.IsThereWall())
+            {
+                if (this.currentRollingTimeAgainstWall < this.maxRollingTimeAgainstWall)
+                {
+                    this.currentRollingTimeAgainstWall += Time.deltaTime;
+                }
+                else
+                {
+                    this.Bonk();
+                }
+            }
+        }
     }
 
     /**
@@ -205,23 +229,34 @@ public class PlayerController : MonoBehaviour
      */
     private void MovePatate()
     {
+        // Replacement par le repousseur de mur
+        if (this.closeToWalls[1])
+        {
+            Debug.Log("REPOUSSE !");
+            this.transform.Translate(0.1f * (this.movingLeft ? 1 : -1), 0, 0);
+        }
+
+
         // Le saut
         if (wantsToJump && this._rigidbody.linearVelocity.y < 0.1f && this.releasedJump) // La base, faut vouloir sauter
         {
             // Walljump en priorité
-            if (!IsGrounded() && this.wallJumpUnlocked && this.wallCheck.CanWallJump())
+            if ((!IsGrounded() || this.wallClipCheck.IsInsideWall()) && this.wallJumpUnlocked && this.wallCheck.CanWallJump())  // Si on clip dans un mur, le jeu nous considèrera à terre, alors qu'on l'est pas vraiment
             {
                 Debug.Log("Bim, walljump !");
                 this.isWallJumping = true;
-                this.movingLeft = !this.movingLeft;
+                //this.movingLeft = !this.movingLeft;
+                this.FlipPatate(!this.movingLeft);
                 this.Jump();
                 this.lastTimeSinceWallJump = 0f;
+                this.currentRollingTimeAgainstWall = 0f;
             }
 
             // Saut classique
             else if (((IsGrounded() || this.timeSinceGrounded < this.coyoteJumpWindow) && !this.firstJumpPerformed) // Touche le sol ou coyote jump, pour saut simple
             || (this.doubleJumpUnlocked && !this.doubleJumpPerformed))    // Ou alors double jump, c'est bien aussi
             {
+                Debug.Log("Saut simple");
                 if (this.firstJumpPerformed)
                 {
                     this.doubleJumpPerformed = true;
@@ -234,28 +269,27 @@ public class PlayerController : MonoBehaviour
         //wantsToJump = false;
 
         // Les directions
-        if (this.isWallJumping)
-        {
-            transform.Translate(this.currentPhysic.wallJumpHorizontalEjectionSpeed * Time.deltaTime * (this.movingLeft ? Vector3.left : Vector3.right));
-        }
-        else
-        {
-            if (!this.closeToWalls[1]) // Pour corriger le bug d'entrée partielle dans le mur
-            {
-                if (this.isRolling)
-                {
-                    transform.Translate(this.currentPhysic.rollingSpeed * Time.deltaTime * Vector3.right);
-                }
-                else
-                {
-                    transform.Translate(this.currentPhysic.walkSpeed * directionFactor * Time.deltaTime * Vector3.right);
-                }
-            }
 
+        // Prios : Rolling > Walljump > Normal
+        if (!this.closeToWalls[1])
+        {
+            if (this.isRolling)
+            {
+                transform.Translate(this.currentPhysic.rollingSpeed * Time.deltaTime * (this.movingLeft ? Vector3.left : Vector3.right));
+            }
+            else if (this.isWallJumping)
+            {
+                transform.Translate(this.currentPhysic.wallJumpHorizontalEjectionSpeed * Time.deltaTime * (this.movingLeft ? Vector3.left : Vector3.right));
+            }
+            else
+            {
+                transform.Translate(this.currentPhysic.walkSpeed * directionFactor * Time.deltaTime * Vector3.right);
+            }
         }
 
         if (directionFactor != 0)
         {
+            //Debug.Log("C'est toi qui fout la merde ?");
             this.FlipPatate(movingLeft);
         }
         else
@@ -399,10 +433,24 @@ public class PlayerController : MonoBehaviour
     private void RockNRoll()
     {
         this.isRolling = true;
+        this.canMove = true;
+    }
+
+    /**
+     * Quand Patate roule contre un mur
+     */
+    private void Bonk()
+    {
+        this.isRolling = false;
+        this._rigidbody.linearVelocity = Vector2.zero;
+        this._rigidbody.AddForce(this.bonkForce * new Vector2((this.movingLeft ? 1 : -1), 2), ForceMode2D.Impulse);
+        this.transform.localScale = this.originalScale;
+        this.currentRollingTimeAgainstWall = 0f;
     }
 
     private IEnumerator ChargeSpinDash()
     {
+        this.canMove = false;
         while (this.transform.localScale != this.rollingScale)
         {
             this.transform.localScale = Vector3.MoveTowards(this.transform.localScale, this.rollingScale, ((Time.deltaTime / this.currentPhysic.rollChargingTime) * (this.originalScale.x - this.rollingScale.x)));
