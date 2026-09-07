@@ -34,6 +34,7 @@ public class EntityHealth : MonoBehaviour
 
 }
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(EntityHealth))]
 public class EntityHealthEditor : Editor
 {
@@ -56,3 +57,4 @@ public class EntityHealthEditor : Editor
         }
     }
 }
+#endif
