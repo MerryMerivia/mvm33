@@ -47,4 +47,11 @@ public class WallCheck : MonoBehaviour
     {
         return (this.boxCollider.IsTouchingLayers(1 << 6));
     }
+
+    public void Flip(bool left)
+    {
+        int direction = (left ? -1 : 1);
+        //this.boxCollider.offset = new Vector2(direction * Mathf.Abs(this.boxCollider.offset.x), this.boxCollider.offset.y);
+        this.transform.localScale = new Vector3(direction, 1, 1);
+    }
 }

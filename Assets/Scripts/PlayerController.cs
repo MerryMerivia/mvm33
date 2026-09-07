@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -79,11 +80,6 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer spriteRenderer;
 
     private InputAction cheat;
-
-    private SpriteRenderer spriteRenderer;
-
-    private InputAction cheat;
-
 
     void Awake()
     {
@@ -217,6 +213,7 @@ public class PlayerController : MonoBehaviour
             {
                 Debug.Log("Bim, walljump !");
                 this.isWallJumping = true;
+                this.movingLeft = !this.movingLeft;
                 this.Jump();
                 this.lastTimeSinceWallJump = 0f;
             }
@@ -239,7 +236,7 @@ public class PlayerController : MonoBehaviour
         // Les directions
         if (this.isWallJumping)
         {
-            transform.Translate(this.currentPhysic.wallJumpHorizontalEjectionSpeed * Time.deltaTime * Vector3.left);
+            transform.Translate(this.currentPhysic.wallJumpHorizontalEjectionSpeed * Time.deltaTime * (this.movingLeft ? Vector3.left : Vector3.right));
         }
         else
         {
@@ -259,18 +256,7 @@ public class PlayerController : MonoBehaviour
 
         if (directionFactor != 0)
         {
-            if(movingLeft)
-            {
-                spriteRenderer.flipX = true;
-                //animator.SetInteger("Direction", -1);
-                //animator.SetBool("IsMoving", true);
-            }
-            else
-            {
-                spriteRenderer.flipX = false;
-                //animator.SetInteger("Direction", 1);
-                //animator.SetBool("IsMoving", true);
-            }
+            this.FlipPatate(movingLeft);
         }
         else
         {
@@ -292,7 +278,20 @@ public class PlayerController : MonoBehaviour
         if (this._rigidbody.linearVelocity.y < 0.01f && this.lastTimeSinceWallJump > this.currentPhysic.wallJumpMinimalTime)   // Si on tombe, et que le walljump était il y a suffisamment longtemps
         {
             this.isWallJumping = false;
+            if ((this.directionFactor == 1 && this.movingLeft) || (this.directionFactor == -1 && !this.movingLeft))
+            {
+                this.FlipPatate(!movingLeft);
+            }
         }
+    }
+
+    private void FlipPatate(bool left)
+    {
+        spriteRenderer.flipX = left;
+        this.wallCheck.Flip(left);
+        this.movingLeft = left;
+        //animator.SetInteger("Direction", (left ? -1 : 1);
+        //animator.SetBool("IsMoving", true);
     }
 
     private void Jump()
