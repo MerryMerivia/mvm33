@@ -343,7 +343,7 @@ public class PlayerController : MonoBehaviour
     {
         float checkExtent = 0.03f;
         RaycastHit2D castHit = Physics2D.BoxCast(_collider.bounds.center, _collider.bounds.size - new Vector3(0.1f, 0, 0), 0f, Vector2.down, checkExtent, groundMask);
-        bool isGrounded = castHit.collider != null;
+        bool isGrounded = (castHit.collider != null && !this.wallClipCheck.IsInsideWall());
 
         // Atterissage
         //if (isGrounded && animator.GetBool("IsAirborne"))
