@@ -7,10 +7,11 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Animator))]
 public class PlayerController : MonoBehaviour
 {
+    private const float GROUND_CHECK_DISTANCE = 0.03f;
     private static readonly int AnimatorAttackTrigger = Animator.StringToHash("Attack");
-    private static readonly int AnimatorJumpTrigger = Animator.StringToHash("Jump");
+    private static readonly int AnimatorInAirBool = Animator.StringToHash("inAir");
+    private static readonly int AnimatorYVelocity = Animator.StringToHash("yVelocity");
     private static readonly int AnimatorWalkingBool = Animator.StringToHash("IsWalking");
-    private static readonly int AnimatorGroundedBool = Animator.StringToHash("Grounded");
 
     [Serializable]
     public struct PhysicsVariables
@@ -131,7 +132,11 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         if (this.canMove)
-        this.MovePatate();
+            this.MovePatate();
+
+        animator.SetFloat(AnimatorYVelocity, _rigidbody.linearVelocityY);
+
+        FixedGroundCheck();
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -163,6 +168,7 @@ public class PlayerController : MonoBehaviour
         if (context.started)
         {
             wantsToJump = true;
+            animator.SetBool(AnimatorInAirBool, true);
         }
 
         if (context.canceled)
@@ -260,7 +266,7 @@ public class PlayerController : MonoBehaviour
         if (wantsToJump && this._rigidbody.linearVelocity.y < 0.1f && this.releasedJump) // La base, faut vouloir sauter
         {
             // Walljump en priorité
-            if ((!IsGrounded() || this.wallClipCheck.IsInsideWall()) && this.wallJumpUnlocked && this.wallCheck.CanWallJump())  // Si on clip dans un mur, le jeu nous considèrera à terre, alors qu'on l'est pas vraiment
+            if ((!JumpGroundCheck() || this.wallClipCheck.IsInsideWall()) && this.wallJumpUnlocked && this.wallCheck.CanWallJump())  // Si on clip dans un mur, le jeu nous considèrera à terre, alors qu'on l'est pas vraiment
             {
                 Debug.Log("Bim, walljump !");
                 this.isWallJumping = true;
@@ -272,7 +278,7 @@ public class PlayerController : MonoBehaviour
             }
 
             // Saut classique
-            else if (((IsGrounded() || this.timeSinceGrounded < this.coyoteJumpWindow) && !this.firstJumpPerformed) // Touche le sol ou coyote jump, pour saut simple
+            else if (((JumpGroundCheck() || this.timeSinceGrounded < this.coyoteJumpWindow) && !this.firstJumpPerformed) // Touche le sol ou coyote jump, pour saut simple
             || (this.doubleJumpUnlocked && !this.doubleJumpPerformed))    // Ou alors double jump, c'est bien aussi
             {
                 Debug.Log("Saut simple");
@@ -322,7 +328,6 @@ public class PlayerController : MonoBehaviour
             this._rigidbody.linearVelocity = new Vector2(this._rigidbody.linearVelocity.x, this.currentPhysic.maxFallingSpeed);
         }
 
-
         this.ResetWallJumpPhysicsIfNeeded();
     }
 
@@ -358,11 +363,21 @@ public class PlayerController : MonoBehaviour
         this.releasedJump = false;
     }
 
+    private void FixedGroundCheck()
+    {
+        animator.SetBool(AnimatorInAirBool, !IsGrounded());
+    }
+
     private bool IsGrounded()
     {
-        float checkExtent = 0.03f;
+        float checkExtent = GROUND_CHECK_DISTANCE;
         RaycastHit2D castHit = Physics2D.BoxCast(_collider.bounds.center, _collider.bounds.size - new Vector3(0.1f, 0, 0), 0f, Vector2.down, checkExtent, groundMask);
-        bool isGrounded = castHit.collider != null;
+        return  castHit.collider != null;
+    }
+
+    private bool JumpGroundCheck()
+    {
+        bool isGrounded = IsGrounded();
 
         // Atterissage
         //if (isGrounded && animator.GetBool("IsAirborne"))
@@ -381,18 +396,30 @@ public class PlayerController : MonoBehaviour
             this.firstJumpPerformed = false;
             this.doubleJumpPerformed = false;
         }
-
-        if (!isGrounded/* && Math.Abs(_rigidbody.linearVelocity.y) > 0.1f*/)
+        else
         {
-            //animator.SetBool("IsAirborne", true);
             this.timeSinceGrounded += Time.deltaTime;
         }
 
         Color rayColor = (isGrounded ? Color.green : Color.red);
 
-        Debug.DrawRay(_collider.bounds.center + new Vector3(_collider.bounds.extents.x, 0), Vector2.down * (_collider.bounds.extents.y + checkExtent), rayColor);
-        Debug.DrawRay(_collider.bounds.center - new Vector3(_collider.bounds.extents.x, 0), Vector2.down * (_collider.bounds.extents.y + checkExtent), rayColor);
-        Debug.DrawRay(_collider.bounds.center - new Vector3(_collider.bounds.extents.x, _collider.bounds.extents.y + checkExtent), Vector2.right * (_collider.bounds.extents.x * 2f), rayColor);
+        Debug.DrawRay(
+            _collider.bounds.center + new Vector3(_collider.bounds.extents.x, 0), 
+            Vector2.down * (_collider.bounds.extents.y + GROUND_CHECK_DISTANCE), 
+            rayColor
+        );
+
+        Debug.DrawRay(
+            _collider.bounds.center - new Vector3(_collider.bounds.extents.x, 0),
+            Vector2.down * (_collider.bounds.extents.y + GROUND_CHECK_DISTANCE),
+            rayColor
+        );
+
+        Debug.DrawRay(
+            _collider.bounds.center - new Vector3(_collider.bounds.extents.x, _collider.bounds.extents.y + GROUND_CHECK_DISTANCE),
+            Vector2.right * (_collider.bounds.extents.x * 2f),
+            rayColor
+        );
 
         return isGrounded;
     }
