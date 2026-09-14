@@ -9,9 +9,12 @@ public class PlayerController : MonoBehaviour
 {
     private const float GROUND_CHECK_DISTANCE = 0.03f;
     private static readonly int AnimatorAttackTrigger = Animator.StringToHash("Attack");
+    private static readonly int AnimatorWallJumpTrigger = Animator.StringToHash("WallJump");
     private static readonly int AnimatorInAirBool = Animator.StringToHash("inAir");
     private static readonly int AnimatorYVelocity = Animator.StringToHash("yVelocity");
-    private static readonly int AnimatorWalkingBool = Animator.StringToHash("IsWalking");
+    private static readonly int AnimatorWalkingBool = Animator.StringToHash("isWalking");
+    private static readonly int AnimatorRollingBool = Animator.StringToHash("isRolling");
+    private static readonly int AnimatorRollSpeed = Animator.StringToHash("rollSpeed");
 
     [Serializable]
     public struct PhysicsVariables
@@ -186,6 +189,9 @@ public class PlayerController : MonoBehaviour
             {
                 if (this.spinDashUnlocked && this.currentPhysic.rollingSpeed > 0)
                 {
+                    animator.SetBool(AnimatorRollingBool, true);
+                    animator.SetFloat(AnimatorRollSpeed, 0.3f);
+
                     StartCoroutine(ChargeSpinDash());
                 }
             }
@@ -270,6 +276,8 @@ public class PlayerController : MonoBehaviour
             {
                 Debug.Log("Bim, walljump !");
                 this.isWallJumping = true;
+                //animator.SetTrigger(AnimatorWallJumpTrigger);
+
                 //this.movingLeft = !this.movingLeft;
                 this.FlipPatate(!this.movingLeft);
                 this.Jump();
@@ -487,6 +495,8 @@ public class PlayerController : MonoBehaviour
      */
     private void Bonk()
     {
+        animator.SetBool(AnimatorRollingBool, false);
+
         this.isRolling = false;
         this._rigidbody.linearVelocity = Vector2.zero;
         this._rigidbody.AddForce(this.bonkForce * new Vector2((this.movingLeft ? 1 : -1), 2), ForceMode2D.Impulse);
@@ -497,9 +507,12 @@ public class PlayerController : MonoBehaviour
     private IEnumerator ChargeSpinDash()
     {
         this.canMove = false;
+
         while (this.transform.localScale != this.rollingScale)
         {
             this.transform.localScale = Vector3.MoveTowards(this.transform.localScale, this.rollingScale, ((Time.deltaTime / this.currentPhysic.rollChargingTime) * (this.originalScale.x - this.rollingScale.x)));
+            animator.SetFloat(AnimatorRollSpeed, animator.GetFloat(AnimatorRollSpeed) + 0.01f);
+
             yield return new WaitForSeconds(0.01f);
         }
         this.RockNRoll();   // Après la charge, on lance le spin dash
