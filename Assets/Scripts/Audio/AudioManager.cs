@@ -28,6 +28,7 @@ public class AudioManager : MonoBehaviour
         jingleSource = gameObject.AddComponent<AudioSource>();
         jingleSource.outputAudioMixerGroup = MusicMixer;
         jingleSource.loop = false;
+        jingleSource.volume = 0.33f;
 
         mixer = SFXMixer.audioMixer;
     }

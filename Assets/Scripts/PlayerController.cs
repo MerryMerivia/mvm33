@@ -104,6 +104,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] AudioClip attackClip;
     [SerializeField] AudioClip jumpClip;
     [SerializeField] AudioClip rollClip;
+    [SerializeField] AudioClip upgradeJingle;
+    [SerializeField] AudioClip dodoJingle;
 
     private AudioManager audioManager;
 
