@@ -58,6 +58,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private WallCheck wallCheck;
     [SerializeField] private WallClipChecker wallClipCheck;
 
+    [SerializeField] private float transitionShiftDistance;
+
     private float lastTimeSinceJumped = 0;
     private float lastTimeSinceWallJump = 0f;
     private bool wantsToJump = false;
@@ -274,7 +276,6 @@ public class PlayerController : MonoBehaviour
             // Walljump en priorité
             if ((!JumpGroundCheck() || this.wallClipCheck.IsInsideWall()) && this.wallJumpUnlocked && this.wallCheck.CanWallJump())  // Si on clip dans un mur, le jeu nous considèrera à terre, alors qu'on l'est pas vraiment
             {
-                Debug.Log("Bim, walljump !");
                 this.isWallJumping = true;
                 //animator.SetTrigger(AnimatorWallJumpTrigger);
 
@@ -289,7 +290,6 @@ public class PlayerController : MonoBehaviour
             else if (((JumpGroundCheck() || this.timeSinceGrounded < this.coyoteJumpWindow) && !this.firstJumpPerformed) // Touche le sol ou coyote jump, pour saut simple
             || (this.doubleJumpUnlocked && !this.doubleJumpPerformed))    // Ou alors double jump, c'est bien aussi
             {
-                Debug.Log("Saut simple");
                 if (this.firstJumpPerformed)
                 {
                     this.doubleJumpPerformed = true;
@@ -385,7 +385,7 @@ public class PlayerController : MonoBehaviour
 
     private bool JumpGroundCheck()
     {
-        bool isGrounded = IsGrounded();
+        bool isGrounded = IsGrounded() && !this.wallClipCheck.IsInsideWall();
 
         // Atterissage
         //if (isGrounded && animator.GetBool("IsAirborne"))
@@ -463,6 +463,31 @@ public class PlayerController : MonoBehaviour
                 this.closeToWalls = new bool[] { false, true };
                 break;
         }
+    }
+
+    /**
+     * Appelé par une instance de Transition pour faire changer Patate de salle
+     */
+    public void ChangeRoom(float transitionAngle = 0)
+    {
+        Vector2 positionShift = Vector2.left;
+        switch (transitionAngle)
+        {
+            case 90:
+                positionShift = Vector2.down;
+                break;
+            case 180:
+                positionShift = Vector2.right;
+                break;
+            case -90:
+            case 270:
+                positionShift = Vector2.up;
+                break;
+        }
+
+        positionShift *= this.transitionShiftDistance;
+
+        this.transform.Translate(positionShift);
     }
 
 
