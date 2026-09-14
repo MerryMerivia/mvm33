@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MusicSetup
   Music: {fileID: 8300000, guid: 966281ec5d8818d47be7d2935f0391cc, type: 3}
   LoopStart: 0
+  SnapshotName: Forest

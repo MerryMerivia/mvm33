@@ -100,6 +100,13 @@ public class PlayerController : MonoBehaviour
 
     private InputAction cheat;
 
+    [Header("Sound")]
+    [SerializeField] AudioClip attackClip;
+    [SerializeField] AudioClip jumpClip;
+    [SerializeField] AudioClip rollClip;
+
+    private AudioManager audioManager;
+
     void Awake()
     {
         Application.targetFrameRate = 60;
@@ -113,6 +120,8 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        audioManager = FindAnyObjectByType<AudioManager>();
+
         this.originalScale = this.transform.localScale;
         //GetComponent<PlayerInput>().currentActionMap
     }
@@ -173,7 +182,6 @@ public class PlayerController : MonoBehaviour
         if (context.started)
         {
             wantsToJump = true;
-            animator.SetBool(AnimatorInAirBool, true);
         }
 
         if (context.canceled)
@@ -209,6 +217,7 @@ public class PlayerController : MonoBehaviour
         if(context.action.WasPerformedThisFrame())
         {
             animator.SetTrigger(AnimatorAttackTrigger);
+            audioManager.PlaySFX(attackClip);
         }
     }
 
@@ -363,7 +372,8 @@ public class PlayerController : MonoBehaviour
     private void Jump()
     {
         //animator.SetBool("IsJumping", true);
-        //audioManager.PlayClip(audioManager.jumpClip);
+        audioManager.PlaySFX(jumpClip);
+
         this._rigidbody.linearVelocity = new Vector2(this._rigidbody.linearVelocity.x, 0);
         _rigidbody.AddForce(Vector2.up * this.currentPhysic.jumpImpulse, ForceMode2D.Impulse);
         _rigidbody.gravityScale = this.currentPhysic.jumpingGravity;
@@ -513,6 +523,8 @@ public class PlayerController : MonoBehaviour
     {
         this.isRolling = true;
         this.canMove = true;
+
+        audioManager.PlaySFX(rollClip);
     }
 
     /**

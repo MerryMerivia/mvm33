@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MusicSetup
   Music: {fileID: 8300000, guid: e08944cb300ba7c409f9051dc1c60368, type: 3}
   LoopStart: 0
+  SnapshotName: Lab

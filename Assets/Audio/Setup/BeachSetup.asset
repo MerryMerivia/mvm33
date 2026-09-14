@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MusicSetup
   Music: {fileID: 8300000, guid: 49614c9d7d434c847abd93bfb0cc37f6, type: 3}
   LoopStart: 0.92
+  SnapshotName: Beach
