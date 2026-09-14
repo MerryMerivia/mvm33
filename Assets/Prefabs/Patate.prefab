@@ -455,6 +455,11 @@ MonoBehaviour:
   rollingScale: {x: 2.2, y: 2.2, z: 2.2}
   maxRollingTimeAgainstWall: 0.08
   bonkForce: 5
+  attackClip: {fileID: 8300000, guid: 7755c5ae4a76bf6489ab4dbcbe72ffc0, type: 3}
+  jumpClip: {fileID: 8300000, guid: 1cb8fb8f7646d584ba3d168af82f0c81, type: 3}
+  rollClip: {fileID: 8300000, guid: e3d8b69087fe9934a8dd852cc613c1cf, type: 3}
+  upgradeJingle: {fileID: 8300000, guid: df47ca7821b7f554084fe62926b1e178, type: 3}
+  dodoJingle: {fileID: 8300000, guid: 348349b9369a05646a821823d880a397, type: 3}
 --- !u!114 &8003507743157820975
 MonoBehaviour:
   m_ObjectHideFlags: 0
