@@ -387,7 +387,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.4, y: 0.4}
+  m_Size: {x: 0.405, y: 0.39}
   m_EdgeRadius: 0
 --- !u!114 &2895584025460756489
 MonoBehaviour:
@@ -445,11 +445,12 @@ MonoBehaviour:
   _collider: {fileID: 3080569841467595679}
   wallCheck: {fileID: 6240370095872434065}
   wallClipCheck: {fileID: 1430703906818128851}
+  transitionShiftDistance: 4
   closeToWalls: 0000
   doubleJumpUnlocked: 0
   wallJumpUnlocked: 1
   spinDashUnlocked: 1
-  rollingScale: {x: 0.55, y: 0.55, z: 0.55}
+  rollingScale: {x: 2.2, y: 2.2, z: 2.2}
   maxRollingTimeAgainstWall: 0.08
   bonkForce: 5
 --- !u!114 &8003507743157820975
