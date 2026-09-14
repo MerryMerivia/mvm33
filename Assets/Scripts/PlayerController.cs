@@ -47,6 +47,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Collider2D _collider;
     [SerializeField] private WallCheck wallCheck;
     [SerializeField] private WallClipChecker wallClipCheck;
+    [SerializeField] private WallClipChecker groundClipCheck;
 
     [SerializeField] private float transitionShiftDistance;
 
@@ -212,7 +213,7 @@ public class PlayerController : MonoBehaviour
 
         if (this.isRolling)
         {
-            if (this.wallCheck.IsThereWall())
+            if (this.wallCheck.IsThereWall() && !this.groundClipCheck.IsInsideWall())
             {
                 if (this.currentRollingTimeAgainstWall < this.maxRollingTimeAgainstWall)
                 {
@@ -243,7 +244,7 @@ public class PlayerController : MonoBehaviour
         if (wantsToJump && this._rigidbody.linearVelocity.y < 0.1f && this.releasedJump) // La base, faut vouloir sauter
         {
             // Walljump en priorité
-            if ((!IsGrounded() || this.wallClipCheck.IsInsideWall()) && this.wallJumpUnlocked && this.wallCheck.CanWallJump())  // Si on clip dans un mur, le jeu nous considèrera à terre, alors qu'on l'est pas vraiment
+            if ((!IsGrounded() || this.wallClipCheck.IsInsideWall()) && !this.groundClipCheck.IsInsideWall() && this.wallJumpUnlocked && this.wallCheck.CanWallJump())  // Si on clip dans un mur, le jeu nous considèrera à terre, alors qu'on l'est pas vraiment
             {
                 this.isWallJumping = true;
                 //this.movingLeft = !this.movingLeft;
