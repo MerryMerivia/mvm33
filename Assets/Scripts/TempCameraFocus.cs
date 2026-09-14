@@ -26,8 +26,6 @@ public class TempCameraFocus : MonoBehaviour
     public CameraDestination[] cameraDestinations;
     [SerializeField] private PlayerController playerController;
 
-    private int currentIndex = 0;
-    private bool isAtDestination = false;
     private float timeSinceArrivedAtDestination = 0f;
 
     private bool active = false;
